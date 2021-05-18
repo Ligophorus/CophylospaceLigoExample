@@ -1,0 +1,147 @@
+---
+title: "Application of the Cophylospace Approach"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Supporting information to
+# Next-generation cophylogeny: unravelling eco-evolutionary processes
+<font size = 3> Isabel Blasco-Costa<sup>1,2</sup>, Alexander Hayward<sup>3</sup>, Robert Poulin<sup>4</sup> and Juan A. Balbuena<sup>5</sup></font><br>
+<font size = 1> <sup>1</sup>Department of Invertebrates, Natural History Museum of Geneva, PO Box 6434, CH-1211 Geneva 6, Switzerland. ORCID: 0000-0002-5001-5986<br>
+<sup>2</sup>Department of Arctic and Marine Biology, UiT The Arctic University of Norway, Langnes, PO Box 6050, 9037 Tromsø, Norway.<br>
+<sup>3</sup>Centre for Ecology and Conservation, University of Exeter, Penryn Campus, Penryn, Cornwall, Exeter, TR10 9FE, UK. ORCID: 0000-0001-7413-718X<br>
+<sup>4</sup>Department of Zoology, University of Otago, PO Box 56, Dunedin New Zealand. ORCID: 0000-0003-1390-1206<br>
+<sup>5</sup>Cavanilles Institute of Biodiversity and Evolutionary Biology, University of Valencia, PO Box 22085, 46071 Valencia, Spain. ORCID: 0000-0003-4006-1353<br></font>
+
+We illustrate the application of the Cophylospace approach in R (R Core Team 2021) with an example of 14 *Ligophorus* spp. (Monogenea: Dactylogyridae) on six Mediterranean and Black Sea species of grey mullets (Mugilidae). Cophylogenetic signal and the interactions between phylogeny and morphology of hosts and parasites will be assessed with the sum  of squared residuals (*m<sup>2</sup>*) produced by PACo (Balbuena et al. 2013), which is inversely proportional to concordance between the configurations being tested. Since *m<sup>2</sup>* depends on branch length units, the dissimilarity matrices will be normalized prior to analysis.
+
+The data needed to run this example are embedded in an R object. 
+```{r load_data}
+LigoMulData <- readRDS("ligophorus_example.rds")
+```
+
+The analyses require two R libraries, `phytools` (Revell 2012) and `paco` (Hutchinson et al. 2017). 
+
+```{r libraries}
+library(phytools)
+library(paco)
+```
+
+### Host Parasite Associations 
+The tanglegram below depicts the host-parasite associations based on phylogenetic informacion of *Ligophorus* (González-Rodríguez et al. 2016) and grey mullets (Durand et al. 2012). Data on host-parasite associations is from González-Rodríguez et al. (2017).
+
+```{r tanglegram1}
+Mul.tree <- LigoMulData$mullets_tree
+Lig.tree <- LigoMulData$lig_tree
+HS <- LigoMulData$assoc_mat
+  # Arrange host-parasite associations in pairs 
+HS.lut <- which(HS ==1, arr.ind=TRUE)
+linkhs <- cbind(rownames(HS)[HS.lut[,1]], colnames(HS)[HS.lut[,2]])
+obj <- cophylo(Mul.tree,Lig.tree, linkhs, rotate = TRUE)
+plot.cophylo(obj, link.lwd=1, link.lty=1, fsize=0.5, pts=FALSE,
+             link.col = "seagreen")
+
+```
+
+### Cophylogentic Signal
+We apply PACo to the normalized matrices of patristic distances of *Ligophorus* spp. and mullets. The significance of the cophylogentic association between hosts and parasites is established based on 1,000 permutations. 
+```{r cophylsignal}
+pdLig <- LigoMulData$patriticLig/max(LigoMulData$patriticLig)
+pdMul <- LigoMulData$patristicMul/max(LigoMulData$patristicMul)
+set.seed(2021) # we set a randomization seed to warrant reproducibility.
+CS <- prepare_paco_data(pdMul, pdLig, HS)
+CS <- add_pcoord(CS, correction = "cailliez")
+CS <- suppressWarnings(PACo(CS, nperm = 1000, symmetric = TRUE, 
+                             shuffled = TRUE))
+CS$gof
+```
+The analysis returns a *m<sup>2</sup>* of 0.745 and the cophylogenetic association between *Ligophorus* spp. and grey mullets is significant at the 0.05 level (*p* = 0.016).
+
+### Interaction of Host phylogeny with *Ligophorus* Shape
+We assess the concordance of host phylogeny with the shape of ventral anchors of *Ligophorus* spp. Ventral anchors are used for attachment to the gills. If significant, one can conclude that host speciation determined anchor shape of *Ligophorus* spp. Procrustes coordinates of ventral anchors of 244 specimens of *Ligophorus* (González-Rodríguez et al. (2017) are used to compute the Procrustes distances between species.
+```{r hostPhylXparaShape}
+LigProc <- LigoMulData$procrustes_coord
+LigProc$species <- as.factor(LigProc$species)
+splitXspp <- split(LigProc[, 2:17], LigProc$species)
+# Compute Procrustes coordinates of species centroids:
+spp_centroids <- t(sapply(splitXspp, colMeans))
+# Euclidean distances between centroids, i.e. Procrustes distances
+PDLigo <- as.matrix(dist(spp_centroids))
+# Normalize Procrustes distances
+PDLigo <- PDLigo/max(PDLigo)
+# Apply PACo
+HI <- prepare_paco_data(pdMul, PDLigo, HS)
+HI <- add_pcoord(HI, correction = "cailliez")
+HI <- suppressWarnings(PACo(HI, nperm = 1000, symmetric = TRUE,
+           shuffled = TRUE))
+HI$gof
+```
+PACo yields a *m<sup>2</sup>* of 0.792. The association between mullet phylogeny and shape of ventral anchors of *Ligophorus* spp. is not significant at the 0.05 level (*p* = 0.067). 
+The concordance (or rather the lack of thereof) between host phylogeny and parasite shape can be visualized as a tanglegram:
+```{r tanglegram2}
+obj <- cophylo(Mul.tree, as.phylo(hclust(dist(spp_centroids))), linkhs,
+               rotate = TRUE)
+plot.cophylo(obj, link.lwd=1, link.lty=1, fsize=0.5, pts=FALSE,
+             link.col = "firebrick")
+
+```
+
+### Interaction of *Ligophorus* Phylogeny with Mullet Shape
+The association between phylogeny of *Ligophorus* spp. and host morphometry is assessed based on data on fishbased.org. (Ideally information of gill shape should have been used but these data are unavailable.)
+```{r parPhyloXhostShape}
+# Handle the morphometric data from fishbase.org to get a distance matrix
+MulMorph <- LigoMulData$mullets_morph
+# Standardize variables & compute Euclidean distances between mullet spp.
+MulMorph <- scale(MulMorph)
+dMulMorph <- as.matrix(dist(MulMorph))
+# Normalize distance matrix
+dMulMorph <- dMulMorph/max(dMulMorph)
+# Apply PACo
+SI <- prepare_paco_data(dMulMorph, pdLig, HS)
+SI <- add_pcoord(SI, correction = "cailliez")
+SI <- suppressWarnings(PACo(SI, nperm = 1000, symmetric = TRUE,
+           shuffled = TRUE))
+SI$gof
+```
+We find a higher concordance between *Ligophorus* phylogeny and host shape than cophylogenetic signal (*m<sup>2</sup>* = 0.583 vs. *m<sup>2</sup>* = 0.745). This association is highly significant *p* = 0.001 and again can be inspected with a tanglegram:
+```{r tanglegram3}
+obj <- cophylo(as.phylo(hclust(dist(MulMorph))), Lig.tree, linkhs,
+               rotate = TRUE)
+plot.cophylo(obj, link.lwd=1, link.lty=1, fsize=0.5, pts=FALSE,
+             link.col = "steelblue")
+
+```
+
+### Comparison of the Three Dimensions of Cophylospace
+Below we compare the *m<sup>2</sup>*s obtained in the three comparisons. The curves represent the distribution of the respective 1,000 *m<sup>2</sup>* random replicates computed to establish the statistical significance of the estimates.
+```{r 3D_Cophylo}
+plot(density(CS$shuffled), col = "seagreen", xlab = "Sum of squared residuals",
+     xlim = c(0.55, 1), main = "")
+lines(density(HI$shuffled), col = "firebrick")
+lines(density(SI$shuffled), col = "steelblue")
+abline(v = CS$gof$ss, col = "seagreen", lwd = 1.2)
+abline(v = HI$gof$ss, col = "firebrick", lwd = 1.2)
+abline(v = SI$gof$ss, col = "steelblue", lwd = 1.2)
+text(CS$gof$ss-0.01, 6, "Cophylogenetic signal", pos = 3, srt = 90,
+     col = "seagreen")
+text(HI$gof$ss-0.01, 6, "Host phylogeny * parasite shape", pos = 3, srt = 90,
+     col = "firebrick")
+text(SI$gof$ss-0.01, 6, "Parasite phylogeny * Host shape", pos = 3, srt = 90,
+     col = "steelblue")
+
+```
+
+### Discussion
+Under a classical cophylogenetic analysis, the significant congruence between mullet and *Ligophorus* phylogenies revealed by PACo would indicate that some degree of cospeciation occurred. However, the evidence presented here indicates that morphometric traits of the hosts can explain speciation of *Ligophorus* better than host phylogeny. Under the Cophylospace framework this could be interpreted as evidence of phylogenetic tracking of the hosts. However, this seems unlikely in this particular host-parasite system because *Ligophorus* spp. do not seem to exert a strong selective pressures on their hosts. A more plausible explanation is that the pattern emerge as a result of intrahost duplications, i.e. several closely related *Ligophorus* occur on and only on the same host species. In fact, the arrangement of *Ligophorus* spp. parasitizing *Mugil cephalus* (*L. mediterraneus*, *L. cephali* and *L. chabaudi*), *P. haematocheilus* (*L. pilengas* and *L. llewellyni*) and *C. saliens* (*L. acuminatus* and *L. minimus*) in respective crown groups seems to indicate several intra-host duplication events. As in other monogeneans (see Blasco-Costa et al. 2012), diversity of microhabitats provided by fish gills could have facilitated lineage duplications in *Ligophorus*. In any case, cospeciation does not seem to be the major force accounting for speciation of *Ligophorus* in the Mediterranean and Black Seas.
+
+#### References
+Balbuena, J.A. et al. (2013) PACo: A Novel Procrustes Application to Cophylogenetic Analysis. PLoS ONE 8, e61048.| https://doi.org/10.1371/journal.pone.0061048<br>
+Blasco-Costa, I. et al. (2012) Molecular phylogeny of species of Ligophorus (Monogenea: Dactylogyridae) and their affinities within the Dactylogyridae. Parasitology International 61, 619–627. https://doi.org/10.1016/j.parint.2012.06.004<br>
+Durand, J.-D. et al. (2012) Systematics of the grey mullets (Teleostei: Mugiliformes: Mugilidae): Molecular phylogenetic evidence challenges two centuries of morphology-based taxonomy. Mol Phylogenet Evol 64, 73–92. https://doi.org/10.1016/j.ympev.2012.03.006<br>
+Hutchinson, M.C. et al. (2017) paco: implementing Procrustean Approach to Cophylogeny in R. Methods Ecol Evol 8, 932–940. https://doi.org/10.1111/2041-210X.12736<br>
+R Core Team (2021) R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.<br>
+Revell, L.J. (2011) phytools: an R package for phylogenetic comparative biology (and other things). Methods Ecol Evol 3, 217–223. https://doi.org/10.1111/j.2041-210X.2011.00169.x<br>
+Rodríguez-González, A. et al. (2016) Evolutionary modularity and morphological integration in the haptoral anchor structures of Ligophorus spp. (Monogenea: Dactylogyridae). Parasitol Res 115, 3519–3533. https://doi.org/10.1007/s00436-016-5117-z <br>
+Rodríguez-González, A. et al. (2017) Evolutionary morphology in shape and size of haptoral anchors in 14 Ligophorus spp. (Monogenea: Dactylogyridae). PLoS ONE 12, e0178367. https://doi.org/10.1371/journal.pone.0178367<br>
