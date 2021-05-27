@@ -118,7 +118,7 @@ We find a higher concordance between *Ligophorus* phylogeny and host shape than 
 
 ### Position in Cophylospace
 Figure 4 shows the position of the system studied in cophylospace. For compatibility with the framework described in the accompanying paper, the axes represent 1 - *m<sup>2</sup>*. 
-``` {r 3dplot, fig.cap = "Fig. 4. Position in cophylospace of the host-parasite system studied (six grey mullet species associtated with 14 species of *Ligophorus*). The plot is interactive. Its orientation can be changed by left-clicking and dragging. Use also the mouse wheel to zoom in and out.", fig.height = 7}
+``` {r 3dplot, fig.cap = "Fig. 4. Position in cophylospace of the host-parasite system studied (six grey mullet species associtated with 14 species of *Ligophorus*). The plot is interactive. Its orientation can be changed by left-clicking and dragging. Use also the mouse wheel to zoom in and out.", fig.height = 7, fig.width = 7.5}
 plot_ly(x = 1-HI$gof$ss, y = 1-SI$gof$ss, z= 1-CS$gof$ss, type="scatter3d",
         mode="markers") %>%
   layout(
