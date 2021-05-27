@@ -63,7 +63,7 @@ The analysis returns a *m<sup>2</sup>* of 0.706 and the cophylogenetic associati
 ### Interaction of Host Phylogeny with *Ligophorus* Shape
 We assess the concordance of host phylogeny with differences in shape of ventral anchors of *Ligophorus* spp (Fig. 2). Ventral anchors are used for attachment to the gills. If significant, one can conclude that host speciation determined anchor shape of *Ligophorus* spp. Procrustes coordinates of ventral anchors of 244 specimens of *Ligophorus* (González-Rodríguez et al. 2017) are used to compute Procrustes distances between species.
 
-```{r tanglegram2, fig.cap = "Fig. 2. Association between the phylogeny of six grey mullet species and the shape of the ventral anchors of 14 species of *Ligophorus*. See Fig. for species abbrevations.", message = FALSE, fig.height = 4.5, fig.width = 9}
+```{r tanglegram2, fig.cap = "Fig. 2. Association between the phylogeny of six grey mullet species and the shape of the ventral anchors of 14 species of *Ligophorus*. See Fig. 1 for species abbrevations.", message = FALSE, fig.height = 4.5, fig.width = 9}
 # Read Procrustes coordinates
 LigProc <- LigoMulData$procrustes_coord
 LigProc$species <- as.factor(LigProc$species)
@@ -92,7 +92,7 @@ PACo yields a *m<sup>2</sup>* of 0.792. The association between mullet phylogeny
 
 ### Interaction of *Ligophorus* Phylogeny with Mullet Shape
 The association between phylogeny of *Ligophorus* spp. and differences in host shape (Fig. 3) is assessed based on morphometric data on fishbase.org. (Ideally information of gill shape should have been used but these data are unavailable.)
-```{r tanglegram3, fig.cap = "Fig. 3. Association between morphometric characters of six grey mullet species and the phylogeny of 14 species of *Ligophorus* See Fig. for species abbrevations.", message = FALSE, fig.height = 4.5, fig.width = 9}
+```{r tanglegram3, fig.cap = "Fig. 3. Association between morphometric characters of six grey mullet species and the phylogeny of 14 species of *Ligophorus* See Fig. 1 for species abbrevations.", message = FALSE, fig.height = 4.5, fig.width = 9}
 # Handle the morphometric data from fishbase.org to get a distance matrix
 MulMorph <- LigoMulData$mullets_morph
 obj <- cophylo(as.phylo(hclust(dist(MulMorph))), Lig.tree, linkhs,
