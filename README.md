@@ -1,4 +1,4 @@
-#Example of Application of the Cophylospace Framework
+# Example of Application of the Cophylospace Framework
 
 ## Supporting information to
 
