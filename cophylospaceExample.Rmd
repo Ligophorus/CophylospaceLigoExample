@@ -1,5 +1,5 @@
 ---
-title: "Application of the Cophylospace Approach"
+title: "Example of Application of the Cophylospace Framework"
 output: html_document
 ---
 
@@ -8,15 +8,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Supporting information to
 # Next-generation cophylogeny: unravelling eco-evolutionary processes
-<font size = 3> Isabel Blasco-Costa<sup>1,2</sup>, Alexander Hayward<sup>3</sup>, Robert Poulin<sup>4</sup> and Juan A. Balbuena<sup>5</sup></font><br>
+##### Isabel Blasco-Costa<sup>1,2</sup>, Alexander Hayward<sup>3</sup>, Robert Poulin<sup>4</sup> and Juan A. Balbuena<sup>5</sup><br>
 <font size = 1> <sup>1</sup>Department of Invertebrates, Natural History Museum of Geneva, PO Box 6434, CH-1211 Geneva 6, Switzerland. ORCID: 0000-0002-5001-5986<br>
 <sup>2</sup>Department of Arctic and Marine Biology, UiT The Arctic University of Norway, Langnes, PO Box 6050, 9037 Tromsø, Norway.<br>
 <sup>3</sup>Centre for Ecology and Conservation, University of Exeter, Penryn Campus, Penryn, Cornwall, Exeter, TR10 9FE, UK. ORCID: 0000-0001-7413-718X<br>
 <sup>4</sup>Department of Zoology, University of Otago, PO Box 56, Dunedin New Zealand. ORCID: 0000-0003-1390-1206<br>
 <sup>5</sup>Cavanilles Institute of Biodiversity and Evolutionary Biology, University of Valencia, PO Box 22085, 46071 Valencia, Spain. ORCID: 0000-0003-4006-1353<br></font>
 
-We illustrate the application of the Cophylospace approach in R (R Core Team 2021) with an example of 14 *Ligophorus* spp. (Monogenea: Dactylogyridae) on six Mediterranean and Black Sea species of grey mullets (Mugilidae). The analyses go along the lines of Russo et al. (2017). However, the Mantel tests proposed by these authors to test whether phylogenetically related taxa are more likely to interact with similar partners could not be implemented here. In specialized associations such as often occurs with host and parasites, a Mantel test lacks sufficient resolution because both closely and distantly related taxa can be equally dissimilar in the associations with their partners. In this particular example, cophylogenetic signal and the interactions between phylogeny and morphology of hosts and parasites will be assessed with the sum of squared residuals (*m<sup>2</sup>*) produced by PACo (Balbuena et al. 2013), which is inversely proportional to the concordance between the configurations being tested. Since *m<sup>2</sup>* depends on branch length units, the dissimilarity matrices will be normalized prior to analysis.The significance of the associations between hosts and parasites will be established based on 1,000 permutations.
-
+We illustrate the application of the cophylospace approach in R (R Core Team 2021) to 14 *Ligophorus* spp. (Monogenea: Dactylogyridae) on six Mediterranean and Black Sea species of grey mullets (Mugilidae). The analyses go along the lines of Russo et al. (2017). However, the Mantel tests proposed by these authors to test whether phylogenetically related taxa are more likely to interact with similar partners could not be implemented here. In specialized associations such as often occurs with host and parasites, a Mantel test lacks sufficient resolution because both closely and distantly related taxa can be equally dissimilar in the associations with their partners. In this particular example, cophylogenetic signal and the interactions between phylogeny and morphology of hosts and parasites will be assessed with the sum of squared residuals (*m<sup>2</sup>*) produced by PACo (Balbuena et al. 2013), which is inversely proportional to the concordance between the configurations being tested. Since *m<sup>2</sup>* depends on branch length units, the dissimilarity matrices will be normalized prior to analysis.The significance of the associations between hosts and parasites will be established based on 1,000 random permutations of the host-parasite association matrix. The original R markdown file used to build this site is available [here](https://github.com/Ligophorus/CophylospaceLigoExample).
+![*Ligoporus* spp. on grey mullets](parliza.png)
 The data needed to run this example are embedded in an R object. 
 ```{r load_data}
 LigoMulData <- readRDS("ligophorus_example.rds")
@@ -33,7 +33,7 @@ library(plotly)
 ### Host-Parasite Associations 
 Figure 1 depicts the host-parasite associations based on phylogenetic information of *Ligophorus* (González-Rodríguez et al. 2016) and grey mullets (Durand et al. 2012). Data on host-parasite associations is from González-Rodríguez et al. (2017).
 
-```{r tanglegram1, fig.cap = "Fig. 1. Tanglegram reflecting the associations between six species of Mediterranean and Black Sea grey mullets and 14 species of *Ligophorus*. Host abbreviations: *Caur*, *Chelon auratus*; *Clab*, *C. labrosus*; *Cram*, *C. ramada*; *Csal*, *C. saliens*; *Mcep*, *Mugil cephalus*; *Phae*, *Planiliza haematocheilus*.  Parasite abbreviations: *Lacu*, *Ligophorus acuminatus*, *Lang*, *L. angustus*; *Lcep*, *L. cephali*; *Lcha*, *L. chabaudi*; *Lcon*, *L. confusus*; *Lhet*, *L. heteronchus*; *Limi*, *L. imitans*; *Llle*, *L. llewellyni*; *Lmac*, *L. macrocolpos*; *Lmed*, *L. mediterraneus*; *Lmin*, *L. minimus*; *Lpil*, *L. pilengas*; *Lszi*, *L. szidati*; *Lvan*, *L. vanbenedeni*.",message = FALSE}
+```{r tanglegram1, fig.cap = "Fig. 1. Tanglegram reflecting the associations between six species of Mediterranean and Black Sea grey mullets and 14 species of *Ligophorus*. Host abbreviations: *Caur*, *Chelon auratus*; *Clab*, *C. labrosus*; *Cram*, *C. ramada*; *Csal*, *C. saliens*; *Mcep*, *Mugil cephalus*; *Phae*, *Planiliza haematocheilus*.  Parasite abbreviations: *Lacu*, *Ligophorus acuminatus*, *Lang*, *L. angustus*; *Lcep*, *L. cephali*; *Lcha*, *L. chabaudi*; *Lcon*, *L. confusus*; *Lhet*, *L. heteronchus*; *Limi*, *L. imitans*; *Llle*, *L. llewellyni*; *Lmac*, *L. macrocolpos*; *Lmed*, *L. mediterraneus*; *Lmin*, *L. minimus*; *Lpil*, *L. pilengas*; *Lszi*, *L. szidati*; *Lvan*, *L. vanbenedeni*.",message = FALSE, fig.height = 4.5, fig.width = 9}
 Mul.tree <- LigoMulData$mullets_tree
 Lig.tree <- LigoMulData$lig_tree
 HS <- LigoMulData$assoc_mat
@@ -63,7 +63,7 @@ The analysis returns a *m<sup>2</sup>* of 0.706 and the cophylogenetic associati
 ### Interaction of Host Phylogeny with *Ligophorus* Shape
 We assess the concordance of host phylogeny with differences in shape of ventral anchors of *Ligophorus* spp (Fig. 2). Ventral anchors are used for attachment to the gills. If significant, one can conclude that host speciation determined anchor shape of *Ligophorus* spp. Procrustes coordinates of ventral anchors of 244 specimens of *Ligophorus* (González-Rodríguez et al. 2017) are used to compute Procrustes distances between species.
 
-```{r tanglegram2, fig.cap = "Fig. 2. Association between the phylogeny of six grey mullet species and the shape of the ventral anchors of 14 species of *Ligophorus*. See Fig. for species abbrevations.", message = FALSE}
+```{r tanglegram2, fig.cap = "Fig. 2. Association between the phylogeny of six grey mullet species and the shape of the ventral anchors of 14 species of *Ligophorus*. See Fig. for species abbrevations.", message = FALSE, fig.height = 4.5, fig.width = 9}
 # Read Procrustes coordinates
 LigProc <- LigoMulData$procrustes_coord
 LigProc$species <- as.factor(LigProc$species)
@@ -92,7 +92,7 @@ PACo yields a *m<sup>2</sup>* of 0.792. The association between mullet phylogeny
 
 ### Interaction of *Ligophorus* Phylogeny with Mullet Shape
 The association between phylogeny of *Ligophorus* spp. and differences in host shape (Fig. 3) is assessed based on morphometric data on fishbase.org. (Ideally information of gill shape should have been used but these data are unavailable.)
-```{r tanglegram3, fig.cap = "Fig. 3. Association between morphometric characters of six grey mullet species and the phylogeny of 14 species of *Ligophorus* See Fig. for species abbrevations.", message = FALSE}
+```{r tanglegram3, fig.cap = "Fig. 3. Association between morphometric characters of six grey mullet species and the phylogeny of 14 species of *Ligophorus* See Fig. for species abbrevations.", message = FALSE, fig.height = 4.5, fig.width = 9}
 # Handle the morphometric data from fishbase.org to get a distance matrix
 MulMorph <- LigoMulData$mullets_morph
 obj <- cophylo(as.phylo(hclust(dist(MulMorph))), Lig.tree, linkhs,
@@ -116,9 +116,9 @@ SI$gof
 ```
 We find a higher concordance between *Ligophorus* phylogeny and host shape than cophylogenetic signal (*m<sup>2</sup>* = 0.610 vs. *m<sup>2</sup>* = 0.706). This association is highly significant *p* = 0.003.
 
-### Translation to Cophylospace
+### Position in Cophylospace
 Figure 4 shows the position of the system studied in cophylospace. For compatibility with the framework described in the accompanying paper, the axes represent 1 - *m<sup>2</sup>*. 
-``` {r 3dplot, fig.cap = "Fig. 4. Position in cophylospace of the host-parasite system studied (six grey mullet species associtated with 14 species of *Ligophorus*). The plot is interactive. Its orientation can be changed by left-clicking and dragging. Use also the mouse wheel to zoom in and out."}
+``` {r 3dplot, fig.cap = "Fig. 4. Position in cophylospace of the host-parasite system studied (six grey mullet species associtated with 14 species of *Ligophorus*). The plot is interactive. Its orientation can be changed by left-clicking and dragging. Use also the mouse wheel to zoom in and out.", fig.height = 7}
 plot_ly(x = 1-HI$gof$ss, y = 1-SI$gof$ss, z= 1-CS$gof$ss, type="scatter3d",
         mode="markers") %>%
   layout(
@@ -131,16 +131,12 @@ plot_ly(x = 1-HI$gof$ss, y = 1-SI$gof$ss, z= 1-CS$gof$ss, type="scatter3d",
 ```
 
 ### Discussion
-Under a classical cophylogenetic analysis, the significant congruence between mullet and *Ligophorus* phylogenies could be interpreted as evidence of cospeciation. However, the cophylospace approach presented here suggests that morphometric traits of the hosts can explain speciation of *Ligophorus* better than host phylogeny. The position of our system in cophylospace space (Fig. 4, compare with Figure I in Box 2, accompanying paper) suggests some degree of assymmetry in which host traits influenced speciation of *Ligophorus* spp. In fact, the arrangement of *Ligophorus* spp. parasitizing *Mugil cephalus* (*L. mediterraneus*, *L. cephali* and *L. chabaudi*), *P. haematocheilus* (*L. pilengas* and *L. llewellyni*) and *C. saliens* (*L. acuminatus* and *L. minimus*) in respective crown groups seems to indicate several intra-host duplication events. As in other monogeneans (see Blasco-Costa et al. 2012), diversity of microhabitats provided by fish gills could have facilitated intrahost lineage duplications in *Ligophorus*. This together with high host specificity would explain why phylogenetically related *Ligophorus* spp. are more likely to interact with the same host species than expected by chance. In any case, cospeciation does not seem to be the major force accounting for speciation of *Ligophorus* in the Mediterranean and Black Seas.
+Under a classical cophylogenetic analysis, the significant congruence between mullet and *Ligophorus* phylogenies could be interpreted as evidence of cospeciation. However, the cophylospace approach presented here suggests that morphometric traits of the hosts can explain speciation of *Ligophorus* better than host phylogeny. The position of our system in cophylospace space (Fig. 4, compare with Figure I in Box 2, accompanying paper) suggests some degree of asymmetry in which host traits influenced speciation of *Ligophorus* spp. In fact, the arrangement of *Ligophorus* spp. parasitizing *Mugil cephalus* (*L. mediterraneus*, *L. cephali* and *L. chabaudi*), *P. haematocheilus* (*L. pilengas* and *L. llewellyni*) and *C. saliens* (*L. acuminatus* and *L. minimus*) in respective crown groups (Fig. 1) seems to indicate several intra-host duplication events. As in other monogeneans (see Blasco-Costa et al. 2012), diversity of microhabitats provided by fish gills could have facilitated intrahost lineage duplications in *Ligophorus*. This together with high host specificity would explain why phylogenetically related *Ligophorus* spp. are more likely to interact with the same host species than expected by chance. In any case, cospeciation does not seem to be the major force accounting for speciation of *Ligophorus* in the Mediterranean and Black Seas.
 <br>
 
 #### Acknowledgements
 <font size = 2>
-<p>We thank Dr. Abril Rodríguez-González for her assistance with the datasets of *Ligophorus* spp.
-</font></p>
-#### Funding
-<font size = 2>
-<p>Funded by the Swiss National Science Foundation (SNSF grant 31003A_169211 to I. Blasco-Costa) and Ministry of Science and Innovation of Spain (grant PID2019-104908GB-I00 to J.A. Balbuena). A. Hayward is supported by a Biotechnology and Biological Sciences Research Council (BBSRC) David Phillips Fellowship (BB/N020146/1).</font> </p>
+<p>We thank Dr. Abril Rodríguez González for her assistance with the datasets of *Ligophorus* spp. Funded by the Swiss National Science Foundation (SNSF grant 31003A_169211 to I. Blasco-Costa) and Ministry of Science and Innovation of Spain (grant PID2019-104908GB-I00 to J.A. Balbuena). A. Hayward is supported by a Biotechnology and Biological Sciences Research Council (BBSRC) David Phillips Fellowship (BB/N020146/1).</font></p>
 #### References
 <font size = 2>
 Balbuena, J.A. et al. (2013) PACo: A Novel Procrustes Application to Cophylogenetic Analysis. PLoS ONE 8, e61048. https://doi.org/10.1371/journal.pone.0061048<br>
