@@ -6,4 +6,6 @@
 
 ##### Isabel Blasco-Costa, Alexander Hayward, Robert Poulin and Juan A. Balbuena
 
-We illustrate the application of the cophylospace approach presented in ***Next-generation cophylogeny: unravelling eco-evolutionary processes*** in R (R Core Team 2021). We analyze the patterns of association of 14 *Ligophorus* spp. (Monogenea: Dactylogyridae) on six Mediterranean and Black Sea species of grey mullets (Mugilidae). Cophylogenetic signal and the interactions between phylogeny and morphology of hosts and parasites are assessed. To this end, we use phylogenetic and morphological information of hosts and parasites. See https://ligophorus.github.io/CophylospaceLigoExample/cophylospaceExample.html.
+#####  https://doi.org/10.1016/j.tree.2021.06.006
+
+We illustrate the application of the cophylospace approach presented in ***Next-generation cophylogeny: unravelling eco-evolutionary processes*** in R (R Core Team 2021). We analyze the patterns of association of 14 *Ligophorus* spp. (Monogenea: Dactylogyridae) on six Mediterranean and Black Sea species of grey mullets (Mugilidae). Cophylogenetic signal and the interactions between phylogeny and morphology of hosts and parasites are assessed. To this end, we use phylogenetic and morphological information of hosts and parasites. See https://ligophorus.github.io/CophylospaceLigoExample/cophylospaceExample.html. 
